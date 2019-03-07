@@ -72,36 +72,36 @@
                             <div class="form-group">
                                 <label for="inputName" class="col-sm-12 control-label">Name</label>
                                 <div class="col-sm-12">
-                                <input type="email" class="form-control" id="inputName" placeholder="Name">
+                                <input type="text" v-model="form.name" class="form-control" id="inputName" placeholder="Name">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="inputEmail" class="col-sm-12 control-label">Email</label>
                                 <div class="col-sm-12">
-                                <input type="email" class="form-control" id="inputEmail" placeholder="Email">
+                                <input type="email" v-model="form.email" class="form-control" id="inputEmail" placeholder="Email">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="inputExperience" class="col-sm-12 control-label">Experience</label>
                                 <div class="col-sm-12">
-                                <textarea class="form-control" id="inputExperience" placeholder="Experience"></textarea>
+                                <textarea v-model="form.bio" class="form-control" id="inputExperience" placeholder="Experience"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="inputPhoto" class="col-sm-12 control-label">Profile Photo</label>
                                 <div class="col-sm-12">
-                                <input type="file" class="form-control-file-border" id="inputPhoto">
+                                <input type="file" @change="updateProfile" class="form-control-file-border" id="inputPhoto">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="inputPassport" class="col-sm-12 control-label">Passport (leave empty if not changing)</label>
                                 <div class="col-sm-12">
-                                <input type="text" class="form-control" id="inputPassport" placeholder="Passport">
+                                <input type="text" v-model="form.password" class="form-control" id="inputPassport" placeholder="Passport">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">
-                                <button type="submit" class="btn btn-success">Update</button>
+                                <button @click.prevent="updateInfo" type="submit" class="btn btn-success">Update</button>
                                 </div>
                             </div>
                             </form>
@@ -119,8 +119,59 @@
 
 <script>
     export default {
+        data() {
+            return {
+                form: new Form({
+                    id: '',
+                    name: '',
+                    email: '',
+                    password: '',
+                    type: '',
+                    bio: '',
+                    photo: ''
+                })
+            }
+        },
+
         mounted() {
             console.log('Component mounted.')
+        },
+
+        methods: {
+            updateInfo() {
+                this.$Progress.start();
+                this.form.put('api/profile').then(()=>{
+                    
+                    this.$Progress.finish();
+                }).catch(()=>{
+                    this.$Progress.fail();
+                });
+            },
+
+            updateProfile(e) {
+                // console.log('UPLOADING!!!')
+                let file = e.target.files[0];
+                console.log(file);
+                let reader = new FileReader();
+                if(file['size'] < 2111775) {
+                    reader.onloadend = (file) => {
+                        // console.log('RESULT', reader.result);
+                        this.form.photo = reader.result;
+                    }
+                    reader.readAsDataURL(file);
+                }
+                else {
+                    swal.fire({
+                        type: 'error',
+                        title: 'Ooops....',
+                        text: 'You are uploading large file!',
+                    })
+                }
+            }
+        },
+
+        created() {
+            axios.get("api/profile").then( ({ data }) => (this.form.fill(data)));
         }
     }
 </script>
