@@ -2,6 +2,7 @@
 .widget-user-header{
     background-position: center center;
     background-size: cover;
+    height: 250px !important;
 }
 </style>
 
@@ -16,7 +17,7 @@
                         <h5 class="widget-user-desc">Web Designer</h5>
                     </div>
                     <div class="widget-user-image">
-                        <img class="img-circle" src="" alt="User Avatar">
+                        <img class="img-circle" :src="getProfilePhoto()" alt="User Avatar">
                     </div>
                     <div class="card-footer">
                         <div class="row">
@@ -72,19 +73,22 @@
                             <div class="form-group">
                                 <label for="inputName" class="col-sm-12 control-label">Name</label>
                                 <div class="col-sm-12">
-                                <input type="text" v-model="form.name" class="form-control" id="inputName" placeholder="Name">
+                                <input type="text" v-model="form.name" class="form-control" :class="{ 'is-invalid': form.errors.has('name') }" id="inputName" placeholder="Name">
+                                <has-error :form="form" field="name"></has-error>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="inputEmail" class="col-sm-12 control-label">Email</label>
                                 <div class="col-sm-12">
-                                <input type="email" v-model="form.email" class="form-control" id="inputEmail" placeholder="Email">
+                                <input type="email" v-model="form.email" class="form-control" :class="{ 'is-invalid': form.errors.has('email') }" id="inputEmail" placeholder="Email">
+                                <has-error :form="form" field="email"></has-error>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="inputExperience" class="col-sm-12 control-label">Experience</label>
                                 <div class="col-sm-12">
-                                <textarea v-model="form.bio" class="form-control" id="inputExperience" placeholder="Experience"></textarea>
+                                <textarea v-model="form.bio" class="form-control" :class="{ 'is-invalid': form.errors.has('bio') }"  id="inputExperience" placeholder="Experience"></textarea>
+                                <has-error :form="form" field="bio"></has-error>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -96,7 +100,8 @@
                             <div class="form-group">
                                 <label for="inputPassport" class="col-sm-12 control-label">Passport (leave empty if not changing)</label>
                                 <div class="col-sm-12">
-                                <input type="text" v-model="form.password" class="form-control" id="inputPassport" placeholder="Passport">
+                                <input type="password" v-model="form.password" class="form-control" :class="{ 'is-invalid': form.errors.has('password') }" id="inputPassport" placeholder="Passport">
+                                <has-error :form="form" field="password"></has-error>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -138,10 +143,18 @@
         },
 
         methods: {
+            getProfilePhoto() {
+                let photo = (this.form.photo.length > 200) ? this.form.photo : "img/profile/"+ this.form.photo ;
+                return photo;
+            },
+
             updateInfo() {
                 this.$Progress.start();
+                if(this.form.password == ''){
+                    this.form.password = undefined;
+                }
                 this.form.put('api/profile').then(()=>{
-                    
+                    Fire.$emit('AfterCreate');
                     this.$Progress.finish();
                 }).catch(()=>{
                     this.$Progress.fail();
@@ -151,9 +164,10 @@
             updateProfile(e) {
                 // console.log('UPLOADING!!!')
                 let file = e.target.files[0];
-                console.log(file);
+                // console.log(file);
                 let reader = new FileReader();
-                if(file['size'] < 2111775) {
+                let limit = 1024 * 1024 * 2;
+                if(file['size'] < limit) {
                     reader.onloadend = (file) => {
                         // console.log('RESULT', reader.result);
                         this.form.photo = reader.result;
