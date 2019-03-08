@@ -1,10 +1,10 @@
 <template>
     <div class="container">
-        <div class="row mt-5" v-if="$gate.isAdmin()">
+        <div class="row mt-5" v-if="$gate.isAdminOrAuthor()">
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Responsive Hover Table</h3>
+                <h3 class="card-title">User's Table</h3>
 
                 <div class="card-tools">
                     <button class="btn btn-success" @click="newModal">
@@ -48,6 +48,10 @@
             </div>
             <!-- Card -->
           </div>
+        </div>
+
+        <div v-if="!$gate.isAdminOrAuthor()">
+            <not-found></not-found>
         </div>
         
         <!-- Modal -->
@@ -182,7 +186,7 @@
             },
 
             loadUsers() {
-                if(this.$gate.isAdmin()){
+                if(this.$gate.isAdminOrAuthor()){
                     axios.get("api/user").then( ({ data }) => (this.users = data.data) );
                 }
             },
