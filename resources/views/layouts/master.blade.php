@@ -68,6 +68,7 @@
               </p>
             </router-link>
           </li>
+          @can('isAdmin')
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-cog green"></i>
@@ -85,15 +86,7 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item">
-            <router-link to="/profile" class="nav-link">
-              <i class="nav-icon fas fa-user orange"></i>
-              <p>
-                Profile
-              </p>
-            </router-link>
-          </li>
-          @can('isAdmin')
+          
           <li class="nav-item">
             <router-link to="/developer" class="nav-link">
               <i class="nav-icon fas fa-cogs"></i>
@@ -103,6 +96,14 @@
             </router-link>
           </li>
           @endcan
+          <li class="nav-item">
+            <router-link to="/profile" class="nav-link">
+              <i class="nav-icon fas fa-user orange"></i>
+              <p>
+                Profile
+              </p>
+            </router-link>
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
               <i class="nav-icon fas fa-power-off red"></i>
@@ -149,9 +150,15 @@
     <strong>Copyright &copy; 2014-2018 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
   </footer>
 </div>
-<!-- ./wrapper -->
+<!-- Wrapper -->
 
-<!-- REQUIRED SCRIPTS -->
+<!-- Authenticated User Only will do this -->
+@auth
+<script>
+  window.user = @json(auth()->user())
+</script>
+@endauth
+
 
 <script src="/js/app.js"></script>
 </body>
