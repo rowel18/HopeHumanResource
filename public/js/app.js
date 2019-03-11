@@ -2325,6 +2325,12 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     var _this6 = this;
 
+    Fire.$on('searching', function () {
+      var query = _this6.$parent.search;
+      axios.get('api/findUser?q=' + query).then(function (data) {
+        _this6.users = data.data;
+      }).catch(function () {});
+    });
     this.loadUsers();
     Fire.$on('AfterCreate', function () {
       _this6.loadUsers();
@@ -61614,7 +61620,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
-    _c("div", { staticClass: "row justify-content-center" }, [
+    _c("div", { staticClass: "row justify-content-center mt-4" }, [
       _c("div", { staticClass: "col-md-10" }, [
         _c("h1", [_vm._v("404")]),
         _vm._v(" "),
@@ -79209,6 +79215,9 @@ var routes = [{
 }, {
   path: '/developer',
   component: __webpack_require__(/*! ./components/Developer.vue */ "./resources/js/components/Developer.vue").default
+}, {
+  path: '*',
+  component: __webpack_require__(/*! ./components/NotFound.vue */ "./resources/js/components/NotFound.vue").default
 }];
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_4__["default"]({
   mode: 'history',
@@ -79245,7 +79254,16 @@ Vue.component('example-component', __webpack_require__(/*! ./components/ExampleC
 
 var app = new Vue({
   el: '#app',
-  router: router
+  router: router,
+  data: {
+    search: ''
+  },
+  methods: {
+    searchit: _.debounce(function () {
+      // console.log('searching!!!');
+      Fire.$emit('searching');
+    }, 250)
+  }
 });
 
 /***/ }),

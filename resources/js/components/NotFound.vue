@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div class="row justify-content-center">
+        <div class="row justify-content-center mt-4">
             <div class="col-md-10">
                 <h1>404</h1>
                 <h3>Not Found What you're looking!</h3>
