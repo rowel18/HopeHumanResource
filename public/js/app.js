@@ -79262,7 +79262,10 @@ var app = new Vue({
     searchit: _.debounce(function () {
       // console.log('searching!!!');
       Fire.$emit('searching');
-    }, 250)
+    }, 250),
+    printme: function printme() {
+      window.print();
+    }
   }
 });
 
