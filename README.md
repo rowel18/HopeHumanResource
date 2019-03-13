@@ -11,7 +11,6 @@ Admin Template Starter with Laravel 5.7 and Vue JS.
 * JWT with Laravel Passport and JavaScript Request
 * Vue Custom Events
 * Vue Form with Laravel
-* Relational Database with Laravel
 * Axios and Ajax Request
 * ACL in Laravel
 
